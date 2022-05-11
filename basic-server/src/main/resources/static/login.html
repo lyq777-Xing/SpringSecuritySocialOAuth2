@@ -3,14 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <script src="https://cdn.staticfile.org/jquery/1.12.3/jquery.min.js"></script>
 </head>
 <body>
-<h1>SpringBootTest系统登录</h1>
-<form action="/login" method="post">
-    <span>用户名称</span><input type="text" name="username" /> <br>
-    <span>用户密码</span><input type="password" name="password" /> <br>
-    <input type="submit" value="登陆">
-</form>
+    <h1>SpringBootTest系统登录</h1>
+    <form action="/login" method="post">
+        <span>用户名称</span><input id="username" type="text" name="username" /> <br>
+        <span>用户密码</span><input id="password" type="password" name="password" /> <br>
+        <input type="button" onclick="login()" value="登陆">
+    </form>
+    <script type="text/javascript">
+        function login(){
+            var username = $("#username").val();
+            var password = $("#password").val();
 
+            if(username === "" || password === ""){
+                alert('用户名或密码不能为空')
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data:{
+                    "username":username,
+                    "password":password
+                },
+                success:function (json) {
+                    if (json.isok){
+                        location.href = '/';
+                    }else {
+                        alert(json.message)
+                        location.href = '/login.html'
+                    }
+                },
+                error:function (e) {
+
+                }
+            })
+        }
+    </script>
 </body>
 </html>
