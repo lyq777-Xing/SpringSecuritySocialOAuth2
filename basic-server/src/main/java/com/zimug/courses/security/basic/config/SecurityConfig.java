@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -41,7 +42,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/syslog","/sysuser")
                 .hasAnyRole("admin")
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+//                多端同时登录被t下线功能
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionFixation().migrateSession()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+//                被t下线后自定义的处理类
+                .expiredSessionStrategy(new CustomExpiredSessionStrategy());
 
 
 /*//        开启httpbasic认证
